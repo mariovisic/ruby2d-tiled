@@ -16,9 +16,9 @@ module Ruby2d
         Window.set(background: @data['__bgColor'])
 
         (@data['layerInstances'].select do |layer|
-          ['Tiles', 'IntGrid'].include?(layer['__type'])
+          ['Tiles', 'IntGrid', 'AutoLayer'].include?(layer['__type'])
         end).each do |layer|
-          if layer['gridTiles'].size > 0
+          if layer['gridTiles'].size > 0 || layer['autoLayerTiles'].size > 0
             tileset = Ruby2D::Tileset.new(
               File.expand_path(File.join(@tileset_relative_path, layer['__tilesetRelPath'])),
               tile_width: layer['__cWid'],
@@ -27,15 +27,16 @@ module Ruby2d
               spacing: 0, # FIXME: implement spacing
             )
 
+            grid_tiles = layer['gridTiles'] + layer['autoLayerTiles']
+
             # FIXME: This needs tweaking, it does not render correctly
-            layer['gridTiles'].each do |tile|
+            grid_tiles.each do |tile|
               tile_id = SecureRandom.uuid
               tileset.define_tile(tile_id, tile['src'][0], tile['src'][1])
               tileset.set_tile(tile_id, [{ x: tile['px'][0], y: tile['px'][1] }])
             end
           elsif layer['intGridCsv'].size > 0
             layer_data = @layer_data.detect { |layer_data| layer_data['uid'] == layer['layerDefUid'] }
-
 
             layer['intGridCsv'].each_with_index do |int_grid_value, index|
               if int_grid_value != 0
