@@ -36,14 +36,18 @@ module Ruby2d
           elsif layer['intGridCsv'].size > 0
             layer_data = @layer_data.detect { |layer_data| layer_data['uid'] == layer['layerDefUid'] }
 
+
             layer['intGridCsv'].each_with_index do |int_grid_value, index|
               if int_grid_value != 0
-                color = (layer_data['intGridValues'].detect { |value| value['value'] == 1 })['color']
+                color = (layer_data['intGridValues'].detect { |value| value['value'] == int_grid_value })['color']
 
-                # FIXME: Seems to be producing incorrect values, needs to be verified
+                # FIXME: Need to support offsers here :)
+                x = (index % layer['__cWid']) * layer['__gridSize']
+                y = ((index + 1).to_i / layer['__cWid'].to_i) * layer['__gridSize']
+
                 Ruby2D::Square.new(
-                  x: index % layer['__cWid'],
-                  y: index + 1 / layer['__cWid'],
+                  x: x,
+                  y: y,
                   size: layer['__gridSize'],
                   color: color
                 )
