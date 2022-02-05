@@ -16,6 +16,7 @@ module Ruby2d
 
       def show
         Window.set background: bg_color
+        @levels.first.show
       end
     end
   end

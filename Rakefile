@@ -5,8 +5,6 @@ require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
 
-task default: :spec
-
 task :render_test do
   require File.join(__dir__, 'lib/ruby2d/tiled')
 
@@ -19,7 +17,7 @@ task :render_test do
     if world_file
       puts "Loading: #{File.basename(world_file)}"
 
-      world = Ruby2d::Tiled::LDTK.load(File.read(world_file))
+      world = Ruby2d::Tiled::LDTK.load(world_file)
       world.show
     else
       close
@@ -28,3 +26,5 @@ task :render_test do
 
   show
 end
+
+task default: [ :spec, :render_test ]
