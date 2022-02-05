@@ -2,6 +2,8 @@
 
 $LOAD_PATH.push(__dir__)
 
+require 'ruby2d'
+
 require "tiled/ldtk"
 require "tiled/level"
 require "tiled/world"

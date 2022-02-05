@@ -13,6 +13,10 @@ module Ruby2d
       def bg_color
         @data['bgColor']
       end
+
+      def show
+        Window.set background: bg_color
+      end
     end
   end
 end
