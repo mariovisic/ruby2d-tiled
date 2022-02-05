@@ -15,6 +15,7 @@ task :render_test do
   on :key_down do
     world_file = world_files.pop
     if world_file
+      Window.clear
       puts "Loading: #{File.basename(world_file)}"
 
       world = Ruby2d::Tiled::LDTK.load(world_file)

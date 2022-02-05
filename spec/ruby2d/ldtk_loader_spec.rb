@@ -9,10 +9,5 @@ RSpec.describe Ruby2d::Tiled::LDTK do
       expect((world_one).levels.size).to eq(4)
       expect((world_two).levels.size).to eq(3)
     end
-
-    it 'loads the world background color' do
-      expect(world_one.bg_color).to eq('#373852')
-      expect(world_two.bg_color).to eq('#806262')
-    end
   end
 end

@@ -6,16 +6,11 @@ module Ruby2d
       attr_reader :levels
 
       def initialize(data, levels)
-        @data = data.slice('bgColor')
+        @data = data
         @levels = levels
       end
 
-      def bg_color
-        @data['bgColor']
-      end
-
       def show
-        Window.set background: bg_color
         @levels.first.show
       end
     end
