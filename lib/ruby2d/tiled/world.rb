@@ -5,8 +5,13 @@ module Ruby2d
     class World
       attr_reader :levels
 
-      def initialize(levels)
+      def initialize(data, levels)
+        @data = data.slice('bgColor')
         @levels = levels
+      end
+
+      def bg_color
+        @data['bgColor']
       end
     end
   end

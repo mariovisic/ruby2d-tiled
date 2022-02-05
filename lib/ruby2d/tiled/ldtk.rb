@@ -5,10 +5,9 @@ module Ruby2d
     class LDTK
       def self.load(ldtk_json_string)
         json = JSON.parse(ldtk_json_string)
+        levels = json.delete('levels').map { |level_data| Level.new(level_data) }
 
-        levels = json.fetch('levels')
-
-        World.new(levels)
+        World.new(json, levels)
       end
     end
   end

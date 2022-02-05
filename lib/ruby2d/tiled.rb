@@ -2,9 +2,10 @@
 
 $LOAD_PATH.push(__dir__)
 
-require "tiled/version"
 require "tiled/ldtk"
+require "tiled/level"
 require "tiled/world"
+require "tiled/version"
 
 module Ruby2d
   module Tiled
