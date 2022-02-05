@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "tiled/version"
+$LOAD_PATH.push(__dir__)
+
+require "tiled/version"
+require "tiled/ldtk"
+require "tiled/world"
 
 module Ruby2d
   module Tiled
     class Error < StandardError; end
-    # Your code goes here...
   end
 end
