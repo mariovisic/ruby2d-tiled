@@ -13,16 +13,30 @@ task :render_test do
   puts "Press a key to view the next world"
 
   on :key_down do |event|
-    if event.key == 'return'
+    case event.key
+    when 'return'
       world_file = world_files.pop
       if world_file
         Window.clear
         puts "Loading: #{File.basename(world_file)}"
 
-        world = Ruby2d::Tiled::LDTK.load(world_file)
-        world.show
+        @world = Ruby2d::Tiled::LDTK.load(world_file)
+        @world.show
       else
         close
+      end
+    end
+  end
+
+  on :key do |event|
+    case event.key
+    when 'a'
+      if @world
+        @world.scale = @world.scale - 0.003
+      end
+    when 'z'
+      if @world
+        @world.scale = @world.scale + 0.003
       end
     end
   end

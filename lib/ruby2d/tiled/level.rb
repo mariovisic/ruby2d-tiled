@@ -3,29 +3,38 @@ require 'securerandom'
 module Ruby2d
   module Tiled
     class Level
+      attr_writer :scale
+
       def initialize(data, tileset_relative_path, layer_data)
+        @scale = 1
+
         @data = data
         @layer_data = layer_data
         @tileset_relative_path = tileset_relative_path
-        @tilesets = @data['layerInstances'].select do |layer|
-          ['Tiles', 'IntGrid'].include?(layer['__type'])
+
+        @layers = @data['layerInstances'].reverse.select do |layer|
+          ['Tiles', 'IntGrid', 'AutoLayer'].include?(layer['__type'])
         end
+        @ruby2d_objects = []
       end
 
       def show
         Window.set(background: @data['__bgColor'])
 
-        (@data['layerInstances'].reverse.select do |layer|
-          ['Tiles', 'IntGrid', 'AutoLayer'].include?(layer['__type'])
-        end).each do |layer|
+        @layers.each do |layer|
+          grid_size = layer['__gridSize'] * @scale
+
           if layer['gridTiles'].size > 0 || layer['autoLayerTiles'].size > 0
             tileset = Ruby2D::Tileset.new(
               File.expand_path(File.join(@tileset_relative_path, layer['__tilesetRelPath'])),
               tile_width: layer['__gridSize'],
               tile_height: layer['__gridSize'],
+              scale: @scale,
               padding: 0, # FIXME: implement padding
               spacing: 0, # FIXME: implement spacing
             )
+
+            @ruby2d_objects.push(tileset)
 
             grid_tiles = layer['gridTiles'] + layer['autoLayerTiles']
 
@@ -35,7 +44,7 @@ module Ruby2d
             grid_tiles.each do |tile|
               tile_id = SecureRandom.uuid
               tileset.define_tile(tile_id, tile['src'][0] / layer['__gridSize'], tile['src'][1] / layer['__gridSize'])
-              tileset.set_tile(tile_id, [{ x: tile['px'][0], y: tile['px'][1] }])
+              tileset.set_tile(tile_id, [{ x: tile['px'][0] * @scale, y: tile['px'][1] * @scale }])
             end
           elsif layer['intGridCsv'].size > 0
             layer_data = @layer_data.detect { |layer_data| layer_data['uid'] == layer['layerDefUid'] }
@@ -45,19 +54,24 @@ module Ruby2d
                 color = (layer_data['intGridValues'].detect { |value| value['value'] == int_grid_value })['color']
 
                 # FIXME: Need to support offsers here :)
-                x = (index % layer['__cWid']) * layer['__gridSize']
-                y = ((index + 1).to_i / layer['__cWid'].to_i) * layer['__gridSize']
+                x = (index % layer['__cWid']) * grid_size
+                y = ((index + 1).to_i / layer['__cWid'].to_i) * grid_size
 
-                Ruby2D::Square.new(
+                @ruby2d_objects.push(Ruby2D::Square.new(
                   x: x,
                   y: y,
-                  size: layer['__gridSize'],
+                  size: grid_size,
                   color: color
-                )
+                ))
               end
             end
           end
         end
+      end
+
+      def clear
+        @ruby2d_objects.each(&:remove)
+        @ruby2d_objects = []
       end
     end
   end
