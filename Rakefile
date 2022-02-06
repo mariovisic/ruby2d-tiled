@@ -44,6 +44,12 @@ task :render_test do
     end
   end
 
+  update do
+    if Window.frames % 60 == 0
+      puts "FPS: #{Window.fps.round}"
+    end
+  end
+
   show
 end
 
