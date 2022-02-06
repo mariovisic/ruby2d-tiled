@@ -3,7 +3,7 @@ require 'securerandom'
 module Ruby2d
   module Tiled
     class Level
-      attr_writer :x_offset, :y_offset
+      attr_writer :x_offset, :y_offset, :angle
 
       FLIP_MAP = {
         0 => nil,
@@ -16,6 +16,7 @@ module Ruby2d
         @scale = 1
         @x_offset = 0
         @y_offset = 0
+        @angle = 0
 
         @data = data
         @layer_data = layer_data

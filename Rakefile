@@ -28,14 +28,16 @@ task :render_test do
       else
         close
       end
+    when 'a' then @world.prev_level
+    when 'd' then @world.next_level
     end
   end
 
   on :key do |event|
     if @world
       case event.key
-      when 'a' then @world.scale = @world.scale - 0.005
-      when 'z' then @world.scale = @world.scale + 0.005
+      when 'w' then @world.scale = @world.scale - 0.02
+      when 's' then @world.scale = @world.scale + 0.02
       when 'left' then @world.x_offset = @world.x_offset - 5
       when 'right' then @world.x_offset = @world.x_offset + 5
       when 'up' then @world.y_offset = @world.y_offset - 5

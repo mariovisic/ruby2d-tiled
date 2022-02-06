@@ -8,34 +8,54 @@ module Ruby2d
       def initialize(data, levels)
         @data = data
         @levels = levels
+        @current_level = 0
         @scale = 1
         @x_offset = 0
         @y_offset = 0
+        @angle = 0
       end
 
       def show
-        @levels.first.show # FIXME: the dev should be able to select the level (rather than just the first)
+        clear
+        @levels[@current_level].scale = @scale
+        @levels[@current_level].x_offset = @x_offset
+        @levels[@current_level].y_offset = @y_offset
+        @levels[@current_level].show
+      end
+
+      def clear
+        @levels[@current_level].clear
+      end
+
+      def next_level
+        if @levels.size > @current_level + 1
+          clear
+          @current_level += 1
+          show
+        end
+      end
+
+      def prev_level
+        if @current_level > 0
+          clear
+          @current_level -= 1
+          show
+        end
       end
 
       def scale=(scale)
         @scale = scale
-        @levels.first.clear
-        @levels.first.scale = @scale
-        @levels.first.show
+        show
       end
 
       def x_offset=(x_offset)
         @x_offset = x_offset
-        @levels.first.clear
-        @levels.first.x_offset = @x_offset
-        @levels.first.show
+        show
       end
 
       def y_offset=(y_offset)
         @y_offset = y_offset
-        @levels.first.clear
-        @levels.first.y_offset = @y_offset
-        @levels.first.show
+        show
       end
     end
   end
