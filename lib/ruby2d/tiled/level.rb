@@ -3,10 +3,12 @@ require 'securerandom'
 module Ruby2d
   module Tiled
     class Level
-      attr_writer :scale
+      attr_writer :scale, :x_offset, :y_offset
 
       def initialize(data, tileset_relative_path, layer_data)
         @scale = 1
+        @x_offset = 0
+        @y_offset = 0
 
         @data = data
         @layer_data = layer_data
@@ -44,7 +46,7 @@ module Ruby2d
             grid_tiles.each do |tile|
               tile_id = SecureRandom.uuid
               tileset.define_tile(tile_id, tile['src'][0] / layer['__gridSize'], tile['src'][1] / layer['__gridSize'])
-              tileset.set_tile(tile_id, [{ x: tile['px'][0] * @scale, y: tile['px'][1] * @scale }])
+              tileset.set_tile(tile_id, [{ x: (tile['px'][0] * @scale) + @x_offset, y: (tile['px'][1] * @scale) + @y_offset }])
             end
           elsif layer['intGridCsv'].size > 0
             layer_data = @layer_data.detect { |layer_data| layer_data['uid'] == layer['layerDefUid'] }
@@ -54,8 +56,8 @@ module Ruby2d
                 color = (layer_data['intGridValues'].detect { |value| value['value'] == int_grid_value })['color']
 
                 # FIXME: Need to support offsers here :)
-                x = (index % layer['__cWid']) * grid_size
-                y = ((index + 1).to_i / layer['__cWid'].to_i) * grid_size
+                x = (((index % layer['__cWid'])) * grid_size) + @x_offset
+                y = (((index + 1).to_i / layer['__cWid'].to_i) * grid_size) + @y_offset
 
                 @ruby2d_objects.push(Ruby2D::Square.new(
                   x: x,

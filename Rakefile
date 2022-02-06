@@ -8,6 +8,9 @@ RSpec::Core::RakeTask.new(:spec)
 task :render_test do
   require File.join(__dir__, 'lib/ruby2d/tiled')
 
+  set width: 1280
+  set height: 720
+
   world_files = Dir.glob(File.join(__dir__, 'spec/fixtures/*.ldtk'))
 
   puts "Press a key to view the next world"
@@ -29,14 +32,14 @@ task :render_test do
   end
 
   on :key do |event|
-    case event.key
-    when 'a'
-      if @world
-        @world.scale = @world.scale - 0.003
-      end
-    when 'z'
-      if @world
-        @world.scale = @world.scale + 0.003
+    if @world
+      case event.key
+      when 'a' then @world.scale = @world.scale - 0.005
+      when 'z' then @world.scale = @world.scale + 0.005
+      when 'left' then @world.x_offset = @world.x_offset - 5
+      when 'right' then @world.x_offset = @world.x_offset + 5
+      when 'up' then @world.y_offset = @world.y_offset - 5
+      when 'down' then @world.y_offset = @world.y_offset + 5
       end
     end
   end
