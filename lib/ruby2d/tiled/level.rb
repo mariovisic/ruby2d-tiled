@@ -5,6 +5,13 @@ module Ruby2d
     class Level
       attr_writer :scale, :x_offset, :y_offset
 
+      FLIP_MAP = {
+        0 => nil,
+        1 => :horizontal,
+        2 => :vertical,
+        3 => :both,
+      }
+
       def initialize(data, tileset_relative_path, layer_data)
         @scale = 1
         @x_offset = 0
@@ -43,9 +50,10 @@ module Ruby2d
 
             # FIXME: We use the gridSize and not the width and height, i'm not sure if that's OK
             # Will need to fix this later
+
             grid_tiles.each do |tile|
               tile_id = SecureRandom.uuid
-              tileset.define_tile(tile_id, tile['src'][0] / layer['__gridSize'], tile['src'][1] / layer['__gridSize'])
+              tileset.define_tile(tile_id, tile['src'][0] / layer['__gridSize'], tile['src'][1] / layer['__gridSize'], flip: FLIP_MAP[tile['f']])
               tileset.set_tile(tile_id, [{ x: (tile['px'][0] * @scale) + @x_offset, y: (tile['px'][1] * @scale) + @y_offset }])
             end
           elsif layer['intGridCsv'].size > 0
