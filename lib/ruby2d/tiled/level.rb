@@ -31,7 +31,7 @@ module Ruby2d
       def show
         Window.set(background: @data['__bgColor'])
 
-        @layers.reverse.each_with_index do |layer, index|
+        @layers.each_with_index do |layer, z_index|
           grid_size = layer['__gridSize'] * @scale
           grid_tiles = layer['gridTiles'] + layer['autoLayerTiles']
 
@@ -44,7 +44,7 @@ module Ruby2d
                 tile_width: layer['__gridSize'],
                 tile_height: layer['__gridSize'],
                 scale: @scale,
-                z: index,
+                z: z_index,
                 padding: 0, # FIXME: implement padding
                 spacing: 0, # FIXME: implement spacing
               )
@@ -75,7 +75,7 @@ module Ruby2d
                 @ruby2d_objects.push(Ruby2D::Square.new(
                   x: x,
                   y: y,
-                  z: index,
+                  z: z_index,
                   size: grid_size,
                   color: color
                 ))
