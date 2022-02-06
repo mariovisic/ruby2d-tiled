@@ -47,14 +47,15 @@ module Ruby2d
 
             grid_tiles = layer['gridTiles'] + layer['autoLayerTiles']
 
-
             # FIXME: We use the gridSize and not the width and height, i'm not sure if that's OK
             # Will need to fix this later
 
+            (grid_tiles.uniq { |tile| tile.slice('src', 'f') }).each do |tile|
+              tileset.define_tile(tile['t'], tile['src'][0] / layer['__gridSize'], tile['src'][1] / layer['__gridSize'], flip: FLIP_MAP[tile['f']])
+            end
+
             grid_tiles.each do |tile|
-              tile_id = SecureRandom.uuid
-              tileset.define_tile(tile_id, tile['src'][0] / layer['__gridSize'], tile['src'][1] / layer['__gridSize'], flip: FLIP_MAP[tile['f']])
-              tileset.set_tile(tile_id, [{ x: (tile['px'][0] * @scale) + @x_offset, y: (tile['px'][1] * @scale) + @y_offset }])
+              tileset.set_tile(tile['t'], [{ x: (tile['px'][0] * @scale) + @x_offset, y: (tile['px'][1] * @scale) + @y_offset }])
             end
           elsif layer['intGridCsv'].size > 0
             layer_data = @layer_data.detect { |layer_data| layer_data['uid'] == layer['layerDefUid'] }
